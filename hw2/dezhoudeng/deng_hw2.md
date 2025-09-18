@@ -207,17 +207,17 @@ Body::Union{Float64, Int64}
 It has Union{Float64, Int64}, which is clearly instable.
 
 ii. Rewrite the function:
-julia> function stable_function(n::Int)
-                             result = 0    # starts as Int
-                             for i in 1:n
-                                 if i % 2 == 0
-                                     result += i * 1    # still Int
-                                 else
-                                     result += i
+    julia> function stable_function(n::Int)
+                                 result = 0    # starts as Int
+                                 for i in 1:n
+                                     if i % 2 == 0
+                                         result += i * 1    # still Int
+                                     else
+                                         result += i
+                                     end
                                  end
+                                 return result
                              end
-                             return result
-                         end
 iii. Let large number n=1000000.
 
     julia> @btime stable_function1(1000000)
@@ -275,25 +275,25 @@ ii.
 
 iii. Test your functions with sample data
 Function #1 Test:
-    julia> apply_function([-π/2,0,π/2])
-    3-element Vector{Float64}:
-    -2.0
-    1.0
-    0.0
+        julia> apply_function([-π/2,0,π/2])
+        3-element Vector{Float64}:
+        -2.0
+        1.0
+        0.0
 Function #2 Test:
-    julia> A = [1 2 3; 4 5 6; 7 8 9]
-    3×3 Matrix{Int64}:
-    1  2  3
-    4  5  6
-    7  8  9
-    julia> matrix_transform(Float64.(A), 2.1)
-    3×3 Matrix{Float64}:
-    5.2   7.2   9.2
-    11.2  13.2  15.2
-    17.2  19.2  21.2
+        julia> A = [1 2 3; 4 5 6; 7 8 9]
+        3×3 Matrix{Int64}:
+        1  2  3
+        4  5  6
+        7  8  9
+        julia> matrix_transform(Float64.(A), 2.1)
+        3×3 Matrix{Float64}:
+        5.2   7.2   9.2
+        11.2  13.2  15.2
+        17.2  19.2  21.2
 Function #3 Test:
-    julia> count_positives(Float64.(A[:, 1]))
-    3
+        julia> count_positives(Float64.(A[:, 1]))
+        3
 
 iv. Explain what the . (dot) operator does in broadcasting
 The . (dot) operator enables element-wise operations. For example, in sum(Float64.(A[:, 1]) .> 0), dot means to take each element of A[:, 1], and compare them to zero individually.
