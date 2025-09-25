@@ -76,7 +76,7 @@ iii.
 ## 1.(Basic Benchmarking) Implement and benchmark different approaches to compute the sum of squares:
 
 i.
-
+```
  function sum_squares_functional(x::Vector{Float64})
             # TODO
         end    julia> using BenchmarkTools
@@ -98,9 +98,10 @@ i.
            # TODO
         end
     sum_squares_broadcast (generic function with 1 method)
+    ```
 
 ii.
-
+    ```
     julia> x = randn(10000)
     10000-element Vector{Float64}:
     -0.24425382254854885
@@ -129,6 +130,7 @@ ii.
     1.5411319022909586
     -1.6434321077065424
     -0.2580234839205887
+        ```
 
 iii.
 
@@ -158,7 +160,9 @@ From above, using sum and anonymous function is just as fast as simple loop, and
 
 ### Answers of the Tasks:
 
-i. julia> @code_warntype unstable_function(10)
+i. 
+
+``` julia> @code_warntype unstable_function(10)
 MethodInstance for unstable_function(::Int64)
   from unstable_function(n::Int64) @ Main REPL[27]:1
 Arguments
@@ -203,30 +207,35 @@ Body::Union{Float64, Int64}
 6 ─       goto #2
 7 ┄ %33 = result::Union{Float64, Int64}
 └──       return %33
+```
 
 It has Union{Float64, Int64}, which is clearly instable.
 
 ii. Rewrite the function:
-    julia> function stable_function(n::Int)
-                                 result = 0    # starts as Int
-                                 for i in 1:n
-                                     if i % 2 == 0
-                                         result += i * 1    # still Int
-                                     else
-                                         result += i
-                                     end
-                                 end
-                                 return result
-                             end
+
+    ```
+    function stable_function(n::Int)
+        result = 0    # starts as Int
+            for i in 1:n
+                if i % 2 == 0
+                    result += i * 1    # still Int
+                else
+                    result += i
+                end
+            end
+            return result
+        end
+    ```
+
 iii. Let large number n=1000000.
 
-    julia> @btime stable_function1(1000000)
-    1.386 ns (0 allocations: 0 bytes)
-    500000500000
+        julia> @btime stable_function1(1000000)
+        1.386 ns (0 allocations: 0 bytes)
+        500000500000
 
-    julia> @btime unstable_function(1000000)
-    1.405 ms (0 allocations: 0 bytes)
-    5.000005e11
+        julia> @btime unstable_function(1000000)
+        1.405 ms (0 allocations: 0 bytes)
+        5.000005e11
 The stable function is much faster than the unstable function.
 
 # Task 3: Basic Array Operations
@@ -234,66 +243,71 @@ The stable function is much faster than the unstable function.
 ### Answers of the Tasks:
 i. 
 
-    # Create arrays
-    zeros_array = zeros(3, 3)              # Create 3x3 matrix of zeros
-    ones_vector = ones(5)              # Create vector of 5 ones
-    random_matrix = rand(2, 4)            # Create 2x4 matrix of random numbers
-    range_vector = [1, 2, 3, 4, 5]             # Create vector [1, 2, 3, 4, 5]
+        # Create arrays
+        zeros_array = zeros(3, 3)              # Create 3x3 matrix of zeros
+        ones_vector = ones(5)              # Create vector of 5 ones
+        random_matrix = rand(2, 4)            # Create 2x4 matrix of random numbers
+        range_vector = [1, 2, 3, 4, 5]             # Create vector [1, 2, 3, 4, 5]
 
-    # Matrix operations
-    A = [1 2 3; 4 5 6; 7 8 9]
-    B = [1 0 1; 0 1 0; 1 0 1]
+        # Matrix operations
+        A = [1 2 3; 4 5 6; 7 8 9]
+        B = [1 0 1; 0 1 0; 1 0 1]
 
-    # Fill in operations:
-    element_22 = A[2, 2]               # Get element at row 2, column 2
-    second_row = A[2, :]               # Get entire second row
-    first_column = A[:, 1]             # Get entire first column
-    main_diagonal = diag(A)            # Get main diagonal elements [1, 5, 9]
+        # Fill in operations:
+        element_22 = A[2, 2]               # Get element at row 2, column 2
+        second_row = A[2, :]               # Get entire second row
+        first_column = A[:, 1]             # Get entire first column
+        main_diagonal = diag(A)            # Get main diagonal elements [1, 5, 9]
 
 ii.
 
-    # Function 1: Apply operation to each element
-    function apply_function(x::Vector{Float64})
-        # Return: a vector whose ith entry is sin(x_i) + cos(2*x_i)
-        # Use broadcasting (dot notation)
-        return sin.(x) + cos.(2 .* x)
-    end
+    ```
+        # Function 1: Apply operation to each element
+        function apply_function(x::Vector{Float64})
+            # Return: a vector whose ith entry is sin(x_i) + cos(2*x_i)
+            # Use broadcasting (dot notation)
+            return sin.(x) + cos.(2 .* x)
+        end
 
-    # Function 2: Matrix-scalar operations
-    function matrix_transform(A::Matrix{Float64}, c::Float64)
-        # Return: a matrix whose (i,j)-entry is (A_ij + c) * 2 - 1
-        # Apply this transformation element-wise
-        return (A .+ c) .* 2 .- 1
-    end
+        # Function 2: Matrix-scalar operations
+        function matrix_transform(A::Matrix{Float64}, c::Float64)
+            # Return: a matrix whose (i,j)-entry is (A_ij + c) * 2 - 1
+            # Apply this transformation element-wise
+            return (A .+ c) .* 2 .- 1
+        end
 
-    # Function 3: Element-wise comparison
-    function count_positives(x::Vector{Float64})
-        # Count how many elements are positive
-        # Hint: use broadcasting and sum
-        return sum(x .> 0)
-    end
+        # Function 3: Element-wise comparison
+        function count_positives(x::Vector{Float64})
+            # Count how many elements are positive
+            # Hint: use broadcasting and sum
+            return sum(x .> 0)
+        end
+    ```
 
 iii. Test your functions with sample data
-Function #1 Test:
-        julia> apply_function([-π/2,0,π/2])
-        3-element Vector{Float64}:
-        -2.0
-        1.0
-        0.0
-Function #2 Test:
-        julia> A = [1 2 3; 4 5 6; 7 8 9]
-        3×3 Matrix{Int64}:
-        1  2  3
-        4  5  6
-        7  8  9
-        julia> matrix_transform(Float64.(A), 2.1)
-        3×3 Matrix{Float64}:
-        5.2   7.2   9.2
-        11.2  13.2  15.2
-        17.2  19.2  21.2
-Function #3 Test:
-        julia> count_positives(Float64.(A[:, 1]))
-        3
+
+    ```
+            # Function #1 Test:
+                julia> apply_function([-π/2,0,π/2])
+                3-element Vector{Float64}:
+                -2.0
+                1.0
+                0.0
+            # Function #2 Test:
+                julia> A = [1 2 3; 4 5 6; 7 8 9]
+                3×3 Matrix{Int64}:
+                1  2  3
+                4  5  6
+                7  8  9
+                julia> matrix_transform(Float64.(A), 2.1)
+                3×3 Matrix{Float64}:
+                5.2   7.2   9.2
+                11.2  13.2  15.2
+                17.2  19.2  21.2
+            # Function #3 Test:
+                julia> count_positives(Float64.(A[:, 1]))
+                3
+    ```
 
 iv. Explain what the . (dot) operator does in broadcasting
 The . (dot) operator enables element-wise operations. For example, in sum(Float64.(A[:, 1]) .> 0), dot means to take each element of A[:, 1], and compare them to zero individually.
