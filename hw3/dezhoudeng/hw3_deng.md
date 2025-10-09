@@ -14,6 +14,28 @@ https://github.com/Honfoglalas/MyFirstPackage.jl
 ### Answer
 
     O(2^n), for it has fib(n - 1) + fib(n - 2), which are two recursion parts.
+### Edited on 2025/10/09:
+    Assume the time cost of calculating fib(n), which has the exponential form k^n with unknown k.
+    Each time we have fib(n) = fib(n - 1) + fib(n - 2). 
+
+$$
+\begin{gather}
+k^{n} = k^{n-1} + k^{n-2}. 
+\end{gather}
+$$
+
+$$
+\begin{gather}
+k = \dfrac{1+\sqrt{5}}{2}.
+\end{gather}
+$$
+
+    Hence, the answer is
+$$
+\begin{gather}
+O((\dfrac{1+\sqrt{5}}{2})^{n})
+\end{gather}
+$$
 
 ### 2)
 
