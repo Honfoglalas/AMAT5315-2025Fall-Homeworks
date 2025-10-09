@@ -77,27 +77,31 @@ iii.
 
 i.
 ```
- function sum_squares_functional(x::Vector{Float64})
-            # TODO
-        end    julia> using BenchmarkTools
+julia> using BenchmarkTools
 
-    julia> # Version 1: Simple loop
-        function sum_squares_loop(x::Vector{Float64})
-            # TODO
-        end
-    sum_squares_loop (generic function with 1 method)
-
-    julia> # Version 2: Using sum and anonymous function
-        function sum_squares_functional(x::Vector{Float64})
-            # TODO
-        end
-    sum_squares_functional (generic function with 1 method)
-
-    julia> # Version 3: Using broadcasting
-        function sum_squares_broadcast(x::Vector{Float64})
+julia> function sum_squares_loop(x::Vector{Float64})
            # TODO
-        end
-    sum_squares_broadcast (generic function with 1 method)
+       end
+sum_squares_loop (generic function with 1 method)
+
+julia> function sum_squares_loop(x::Vector{Float64})
+       total = 0.0
+           for i in eachindex(x)
+               total += x[i] * x[i]
+           end
+           return total
+       end
+sum_squares_loop (generic function with 1 method)
+
+julia> function sum_squares_functional(x::Vector{Float64})
+           return sum(xi -> xi * xi, x)
+       end
+sum_squares_functional (generic function with 1 method)
+
+julia> function sum_squares_broadcast(x::Vector{Float64})
+           return sum(x .^ 2)
+       end
+sum_squares_broadcast (generic function with 1 method)
     ```
 
 ii.
@@ -155,6 +159,70 @@ Another Try:
 iv.
 
 From above, using sum and anonymous function is just as fast as simple loop, and the broadcasting function is the lowest.The reason is that the broadcasting function does copy inputs and create a virtual array, while other two functions don't. It makes the broadcasting function less efficienct.
+2025/10/09
+Edited:
+```
+julia> function sum_squares_loop(x::Vector{Float64})
+       total = 0.0
+           for i in eachindex(x)
+               total += x[i] * x[i]
+           end
+           return total
+       end
+sum_squares_loop (generic function with 1 method)
+
+julia> function sum_squares_functional(x::Vector{Float64})
+           return sum(xi -> xi * xi, x)
+       end
+sum_squares_functional (generic function with 1 method)
+
+julia> function sum_squares_broadcast(x::Vector{Float64})
+           return sum(x .^ 2)
+       end
+sum_squares_broadcast (generic function with 1 method)
+
+julia> x = randn(10000)
+10000-element Vector{Float64}:
+ -1.0107491423578914
+ -0.23678470423960365
+ -0.2416896757169892
+ -1.1765384319300072
+  1.8722700117129343
+ -1.4775312226695783
+  0.6130922100493651
+  0.24507544276644444
+  0.6796189843410887
+ -0.2170355206313096
+ -0.6387465842068056
+  0.47529425294986727
+  0.4773075805808943
+  ⋮
+ -0.6208663422546729
+ -0.6896869080304372
+  0.515450617980146
+  1.1624721024882336
+ -3.482011643476688
+  0.7016582011346962
+  1.2363614602166404
+  0.12923769041946356
+  0.601917545292705
+  0.05992993571385328
+ -0.626682974826411
+  0.7025691559684631
+
+julia> @btime sum_squares_functional(x)
+  639.659 ns (0 allocations: 0 bytes)
+9740.811634271548
+
+julia> @btime sum_squares_loop(x)
+  3.711 μs (0 allocations: 0 bytes)
+9740.811634271535
+
+julia> @btime sum_squares_broadcast(x)
+  2.271 μs (3 allocations: 78.20 KiB)
+9740.811634271548
+
+```
 
 ## 2.(Performance Analysis) Analyze this type-unstable function:
 
